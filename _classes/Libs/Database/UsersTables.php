@@ -41,4 +41,32 @@ class UsersTables
             exit();
         }
     }
+
+    public function all ()
+    {
+        $statement = $this->db->query("SELECT users.*, roles.name AS role FROM users LEFT JOIN roles ON users.role_id = roles.id");
+        return $statement->fetchAll();
+    }
+
+    public function updatePhoto($id, $photo)
+    {
+        try {
+            $statement = $this->db->prepare("UPDATE users SET photo=:photo WHERE id=:id");
+            $statement->execute(['id' => $id, 'photo' => $photo]);
+
+            return $statement->rowCount();
+
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            exit();
+        }
+    }
+
+    public function delete($id)
+    {
+        $statement = $this->db->prepare("DELETE FROM users WHERE id=:id");
+        $statement->execute(["id" => $id]);
+
+        return $statement->rowCount();
+    }
 }
